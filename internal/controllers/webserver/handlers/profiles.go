@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/invopop/ctxi18n/i18n"
 	"github.com/labstack/echo/v4"
@@ -75,12 +76,14 @@ func (h *Handler) NewProfile(c echo.Context) error {
 	}
 
 	if c.Request().Method == "POST" {
-		description := c.FormValue("profile-description")
-		if description == "" {
+		name := strings.TrimSpace(c.FormValue("profile-name"))
+		if name == "" {
 			return RenderError(c, partials.ErrorMessage(i18n.T(c.Request().Context(), "profiles.new.empty"), true))
 		}
 
-		profile, err := h.Model.AddProfile(siteID, tenantID, description)
+		description := strings.TrimSpace(c.FormValue("profile-description"))
+
+		profile, err := h.Model.AddProfile(siteID, tenantID, name, description)
 		if err != nil {
 			return RenderError(c, partials.ErrorMessage(i18n.T(c.Request().Context(), "profiles.new.could_not_save"), true))
 		}
@@ -145,14 +148,16 @@ func (h *Handler) EditProfile(c echo.Context, method string, id string, successM
 	}
 
 	if method == "POST" {
-		description := c.FormValue("profile-description")
-		if description == "" {
-			return RenderError(c, partials.ErrorMessage(i18n.T(c.Request().Context(), "profiles.edit.empty"), true))
+		name := strings.TrimSpace(c.FormValue("profile-name"))
+		if name == "" {
+			return RenderError(c, partials.ErrorMessage(i18n.T(c.Request().Context(), "profiles.new.empty"), true))
 		}
+
+		description := strings.TrimSpace(c.FormValue("profile-description"))
 
 		applyToAll := c.FormValue("profile-assignment")
 
-		if err := h.Model.UpdateProfile(profileId, description, applyToAll, commonInfo); err != nil {
+		if err := h.Model.UpdateProfile(profileId, name, description, applyToAll, commonInfo); err != nil {
 			return RenderError(c, partials.ErrorMessage(i18n.T(c.Request().Context(), "profiles.edit.could_not_save"), true))
 		}
 
@@ -635,10 +640,12 @@ func (h *Handler) CloneProfile(c echo.Context) error {
 	}
 
 	if c.Request().Method == "POST" {
-		profileDescription := c.FormValue("profile-description")
-		if profileDescription == "" {
-			return RenderError(c, partials.ErrorMessage(fmt.Sprintf("%s : %v", i18n.T(c.Request().Context(), "profiles.new.empty"), err), true))
+		profileName := strings.TrimSpace(c.FormValue("profile-name"))
+		if profileName == "" {
+			return RenderError(c, partials.ErrorMessage(i18n.T(c.Request().Context(), "profiles.new.empty"), true))
 		}
+
+		profileDescription := strings.TrimSpace(c.FormValue("profile-description"))
 
 		tenantID := -1
 		tenant := c.FormValue("tenant-id")
@@ -660,7 +667,7 @@ func (h *Handler) CloneProfile(c echo.Context) error {
 
 		}
 
-		if err := h.Model.CloneProfile(profileID, profileDescription, tenantID, siteID); err != nil {
+		if err := h.Model.CloneProfile(profileID, profileName, profileDescription, tenantID, siteID); err != nil {
 			return RenderError(c, partials.ErrorMessage(i18n.T(c.Request().Context(), "profiles.clone.could_not_clone", err), true))
 		}
 

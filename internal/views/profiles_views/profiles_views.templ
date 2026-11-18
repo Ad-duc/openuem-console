@@ -51,10 +51,11 @@ templ Profiles(c echo.Context, p partials.PaginationAndSort, profiles []*ent.Pro
 							<tr>
 								<th>
 									<div class="flex gap-1 items-center">
-										<span>{ i18n.T(ctx, "profiles.new.profile") }</span>
-										@partials.SortByColumnIcon(c, p, i18n.T(ctx, "Serial"), "serial", "alpha", "#main", "outerHTML", "get")
+										<span>{ i18n.T(ctx, "profiles.new.name") }</span>
+										@partials.SortByColumnIcon(c, p, i18n.T(ctx, "profiles.new.name"), "name", "alpha", "#main", "outerHTML", "get")
 									</div>
 								</th>
+								<th><span>{ i18n.T(ctx, "profiles.new.profile") }</span></th>
 								<th><span>{ i18n.T(ctx, "profiles.is_enabled") }</span></th>
 								<th class="w-1/12"><span>{ i18n.T(ctx, "profiles.status") }</span></th>
 								<th><span>{ i18n.T(ctx, "profiles.new.applied_to") }</span></th>
@@ -75,6 +76,7 @@ templ Profiles(c echo.Context, p partials.PaginationAndSort, profiles []*ent.Pro
 										hx-swap="outerHTML"
 									>{ profile.Name }</a>
 								</td>
+								<td class="!align-middle">{ profile.Description }</td>
 								<td class="!align-middle">
 									if  profile.Disabled {
 										@partials.Crossmark()

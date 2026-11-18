@@ -1131,10 +1131,12 @@ pt:
     new:
       title: "Novo perfil"
       description: "Dê ao perfil uma descrição que ajude a identificar seu alvo"
+      name: "Nome"
+      name_text: "Introduza um nome..."
       profile: "Descrição"
       text: "Introduza uma descrição..."
       create: "Criar perfil"
-      empty: "A descrição do perfil não pode estar vazia"
+      empty: "O nome do perfil não pode estar vazio"
       could_not_save: "Não foi possível salvar o perfil"
       saved: "Um novo perfil foi criado"
       num_tasks: "# Tarefas"

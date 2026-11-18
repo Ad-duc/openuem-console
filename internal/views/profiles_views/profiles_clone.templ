@@ -32,6 +32,27 @@ templ CloneProfile(c echo.Context, profile *ent.Profile, allTenants []*ent.Tenan
 					hx-push-url="false"
 				>
 					<div class="w-2/3">
+						<label class="uk-form-label" for="profile-name">
+							{ i18n.T(ctx, "profiles.new.name") }
+						</label>
+						<div class="uk-form-controls">
+							<input
+								id="profile-name"
+								name="profile-name"
+								type="text"
+								class="uk-input"
+								value={ profile.Name }
+								placeholder={ i18n.T(ctx, "profiles.new.name_text") }
+								aria-label="Profile's name"
+								autocomplete="off"
+								autocorrect="off"
+								autocapitalize="off"
+								spellcheck="false"
+								required
+							/>
+						</div>
+					</div>
+					<div class="w-2/3">
 						<label class="uk-form-label" for="profile-description">
 							{ i18n.T(ctx, "profiles.clone.profile_description") }
 						</label>
@@ -47,9 +68,7 @@ templ CloneProfile(c echo.Context, profile *ent.Profile, allTenants []*ent.Tenan
 								autocorrect="off"
 								autocapitalize="off"
 								spellcheck="false"
-							>
-								{ profile.Name }
-							</textarea>
+							>{ profile.Description }</textarea>
 						</div>
 					</div>
 					<select

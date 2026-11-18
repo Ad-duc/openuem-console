@@ -1131,10 +1131,12 @@ ca:
     new:
       title: "Nou perfil"
       description: "Doneu al perfil una descripció que ajudi a identificar el seu objectiu"
+      name: "Nom"
+      name_text: "Introdueix un nom..."
       profile: "Descripció del perfil"
       text: "Introdueix una descripció..."
       create: "Crea un perfil"
-      empty: "La descripció del perfil no pot estar buida"
+      empty: "El nom del perfil no pot estar buit"
       could_not_save: "No s'ha pogut desar el perfil"
       saved: "S'ha creat un perfil nou"
       num_tasks: "#Tasques"

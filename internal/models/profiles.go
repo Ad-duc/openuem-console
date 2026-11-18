@@ -85,8 +85,8 @@ func (m *Model) GetProfilesByPage(p partials.PaginationAndSort, c *partials.Comm
 	return profiles, nil
 }
 
-func (m *Model) AddProfile(siteID int, tenantID int, description string) (*ent.Profile, error) {
-	query := m.Client.Profile.Create().SetName(description)
+func (m *Model) AddProfile(siteID int, tenantID int, name string, description string) (*ent.Profile, error) {
+	query := m.Client.Profile.Create().SetName(name).SetDescription(description)
 
 	if tenantID != -1 {
 		query.AddTenantIDs(tenantID)
@@ -102,15 +102,15 @@ func (m *Model) AddProfile(siteID int, tenantID int, description string) (*ent.P
 	return profile, nil
 }
 
-func (m *Model) UpdateProfile(profileID int, description string, apply string, c *partials.CommonInfo) error {
+func (m *Model) UpdateProfile(profileID int, name string, description string, apply string, c *partials.CommonInfo) error {
 
 	switch apply {
 	case "applyToAll":
-		return m.Client.Profile.Update().Where(profile.ID(profileID)).SetName(description).ClearTags().SetApplyToAll(true).Exec(context.Background())
+		return m.Client.Profile.Update().Where(profile.ID(profileID)).SetName(name).SetDescription(description).ClearTags().SetApplyToAll(true).Exec(context.Background())
 	case "useTags":
-		return m.Client.Profile.Update().Where(profile.ID(profileID)).SetName(description).SetApplyToAll(false).Exec(context.Background())
+		return m.Client.Profile.Update().Where(profile.ID(profileID)).SetName(name).SetDescription(description).SetApplyToAll(false).Exec(context.Background())
 	}
-	return m.Client.Profile.Update().Where(profile.ID(profileID)).SetName(description).ClearTags().SetApplyToAll(false).Exec(context.Background())
+	return m.Client.Profile.Update().Where(profile.ID(profileID)).SetName(name).SetDescription(description).ClearTags().SetApplyToAll(false).Exec(context.Background())
 }
 
 func (m *Model) GetProfileById(profileId int, c *partials.CommonInfo) (*ent.Profile, error) {
@@ -191,7 +191,7 @@ func (m *Model) GetAllProfiles() ([]*ent.Profile, error) {
 	return m.Client.Profile.Query().All(context.Background())
 }
 
-func (m *Model) CloneProfile(profileID int, description string, tenantID int, siteID int) error {
+func (m *Model) CloneProfile(profileID int, name string, description string, tenantID int, siteID int) error {
 	// 1. Get the profile and its tasks
 	profile, err := m.Client.Profile.Query().WithTasks().Where(profile.ID(profileID)).Only(context.Background())
 	if err != nil {
@@ -205,7 +205,7 @@ func (m *Model) CloneProfile(profileID int, description string, tenantID int, si
 	}
 
 	// 3. Create the new profile
-	query := tx.Profile.Create().SetName(description)
+	query := tx.Profile.Create().SetName(name).SetDescription(description)
 	if tenantID != -1 {
 		query.AddTenantIDs(tenantID)
 

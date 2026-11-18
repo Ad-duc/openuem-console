@@ -29,7 +29,25 @@ templ NewProfile(c echo.Context, commonInfo *partials.CommonInfo) {
 					hx-swap="outerHTML"
 					hx-push-url="false"
 				>
-					<label class="uk-form-label" for="profile-description">
+					<label class="uk-form-label" for="profile-name">
+						{ i18n.T(ctx, "profiles.new.name") }
+					</label>
+					<div class="uk-form-controls">
+						<input
+							id="profile-name"
+							name="profile-name"
+							type="text"
+							class="uk-input w-1/2"
+							placeholder={ i18n.T(ctx, "profiles.new.name_text") }
+							aria-label="Profile's name"
+							autocomplete="off"
+							autocorrect="off"
+							autocapitalize="off"
+							spellcheck="false"
+							required
+						/>
+					</div>
+					<label class="uk-form-label mt-4" for="profile-description">
 						{ i18n.T(ctx, "profiles.new.profile") }
 					</label>
 					<div class="uk-form-controls">

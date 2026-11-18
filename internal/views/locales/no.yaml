@@ -1131,10 +1131,12 @@ no:
     new:
       title: "Ny profil"
       description: "Gi profilen en beskrivelse som hjelper med å identifisere målet"
+      name: "Navn"
+      name_text: "Skriv inn et navn..."
       profile: "Profilens beskrivelse"
       text: "Skriv inn en beskrivelse..."
       create: "Opprett profil"
-      empty: "Profilens beskrivelse kan ikke være tom"
+      empty: "Profilens navn kan ikke være tomt"
       could_not_save: "Kunne ikke lagre profilen"
       saved: "En ny profil er opprettet"
       num_tasks: "# Oppgaver"
