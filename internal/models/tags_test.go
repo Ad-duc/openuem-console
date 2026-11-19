@@ -191,6 +191,48 @@ func (suite *TagsTestSuite) TestDeleteTag() {
 	assert.Equal(suite.T(), 6, count, "tags count should be 6")
 }
 
+func (suite *TagsTestSuite) TestCreateDefaultTags() {
+	client := enttest.Open(suite.t, "sqlite3", "file:defaulttags?mode=memory&_fk=1")
+	defer client.Close()
+	model := Model{Client: client}
+
+	t, err := model.CreateDefaultTenant()
+	assert.NoError(suite.T(), err, "should create default tenant")
+
+	err = model.CreateDefaultTags(t.ID)
+	assert.NoError(suite.T(), err, "should create default tags")
+
+	tags, err := client.Tag.Query().WithTenant().All(context.Background())
+	assert.NoError(suite.T(), err, "should get default tags")
+	assert.Equal(suite.T(), len(DefaultTags), len(tags), "all default tags should be created")
+
+	for i, tag := range tags {
+		assert.Equal(suite.T(), DefaultTags[i].Tag, tag.Tag)
+		assert.Equal(suite.T(), DefaultTags[i].Description, tag.Description)
+		assert.Equal(suite.T(), DefaultTags[i].Color, tag.Color)
+		assert.Equal(suite.T(), t.ID, tag.Edges.Tenant.ID, "default tag should belong to the default tenant")
+	}
+
+	// A second call must not create anything as tags already exist
+	err = model.CreateDefaultTags(t.ID)
+	assert.NoError(suite.T(), err, "should not fail if tags already exist")
+
+	nTags, err := client.Tag.Query().Count(context.Background())
+	assert.NoError(suite.T(), err, "should count tags")
+	assert.Equal(suite.T(), len(DefaultTags), nTags, "no tag should be added on second call")
+}
+
+func (suite *TagsTestSuite) TestDefaultTagsColors() {
+	validColors := []string{"red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink", "rose", "gray", "stone"}
+	names := map[string]bool{}
+
+	for _, tag := range DefaultTags {
+		assert.Contains(suite.T(), validColors, tag.Color, "default tag color should be available in the color selector")
+		assert.False(suite.T(), names[tag.Tag], "default tag names should be unique")
+		names[tag.Tag] = true
+	}
+}
+
 func TestTagsTestSuite(t *testing.T) {
 	suite.Run(t, new(TagsTestSuite))
 }

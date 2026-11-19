@@ -167,3 +167,52 @@ func (m *Model) DeleteTag(tagId int, c *partials.CommonInfo) error {
 
 	return m.Client.Tag.DeleteOneID(tagId).Where(tag.HasTenantWith(tenant.ID(tenantID))).Exec(context.Background())
 }
+
+// DefaultTag describes a tag that is created when OpenUEM is installed for the first time
+type DefaultTag struct {
+	Tag         string
+	Description string
+	Color       string
+}
+
+// DefaultTags is the list of tags created in the default organization on a fresh installation.
+// Colors must be one of the names offered by the color selector of the tags view.
+var DefaultTags = []DefaultTag{
+	// Operating system
+	{Tag: "GLOBAL - Windows", Description: "All Windows endpoints", Color: "sky"},
+	{Tag: "GLOBAL - Linux", Description: "All Linux endpoints", Color: "rose"},
+	{Tag: "GLOBAL - macOS", Description: "All macOS endpoints", Color: "gray"},
+	// Device type
+	{Tag: "GLOBAL - Servers", Description: "All servers", Color: "indigo"},
+	{Tag: "GLOBAL - Desktops", Description: "All desktop computers", Color: "teal"},
+	{Tag: "GLOBAL - Laptops", Description: "All laptops", Color: "cyan"},
+	// Deployment rings
+	{Tag: "RING - Pilot", Description: "Endpoints that receive profiles and updates first", Color: "amber"},
+	{Tag: "RING - Production", Description: "Endpoints that receive profiles and updates once validated by the pilot ring", Color: "green"},
+	// Lifecycle
+	{Tag: "LIFECYCLE - Staging", Description: "Endpoints being prepared before they are handed over", Color: "violet"},
+	{Tag: "LIFECYCLE - Decommission", Description: "Endpoints that are about to be retired", Color: "stone"},
+}
+
+// CreateDefaultTags creates the default tags for the given tenant.
+// Tag names are unique for the whole database, so nothing is created if a tag
+// already exists, which is the case when an existing installation is upgraded.
+func (m *Model) CreateDefaultTags(tenantID int) error {
+	ctx := context.Background()
+
+	nTags, err := m.Client.Tag.Query().Count(ctx)
+	if err != nil {
+		return err
+	}
+
+	if nTags > 0 {
+		return nil
+	}
+
+	builders := make([]*ent.TagCreate, 0, len(DefaultTags))
+	for _, t := range DefaultTags {
+		builders = append(builders, m.Client.Tag.Create().SetTag(t.Tag).SetDescription(t.Description).SetColor(t.Color).SetTenantID(tenantID))
+	}
+
+	return m.Client.Tag.CreateBulk(builders...).Exec(ctx)
+}
