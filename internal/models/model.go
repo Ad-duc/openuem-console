@@ -85,6 +85,11 @@ func (m *Model) CreateDefaultTenantAndSite() error {
 				return fmt.Errorf("could not clone global settings, reason: %v", err)
 			}
 		}
+
+		// Create default tags on a fresh installation
+		if err := m.CreateDefaultTags(t.ID); err != nil {
+			return fmt.Errorf("could not create default tags, reason: %v", err)
+		}
 	}
 
 	return nil

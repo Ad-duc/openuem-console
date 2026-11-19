@@ -91,6 +91,19 @@ templ NavBar(active string, commonInfo *CommonInfo) {
 				<uk-icon hx-history="false" icon="satellite-dish" custom-class="h-5 w-5" uk-cloack></uk-icon>
 				<span class="sr-only">Agents</span>
 			</a>
+			if commonInfo.TenantID != "" && commonInfo.TenantID != "-1" {
+				<a
+					href={ templ.URL(fmt.Sprintf("/tenant/%s/admin/tags", commonInfo.TenantID)) }
+					hx-get={ string(templ.URL(fmt.Sprintf("/tenant/%s/admin/tags", commonInfo.TenantID))) }
+					hx-push-url="true"
+					hx-target="body"
+					uk-tooltip={ fmt.Sprintf("title: %s; pos: right", i18n.T(ctx, "Tag.other")) }
+					class={ "flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8", templ.KV("bg-primary text-primary-foreground", active == "tags"), templ.KV("text-muted-foreground hover:text-foreground", active != "tags") }
+				>
+					<uk-icon hx-history="false" icon="tags" custom-class="h-5 w-5" uk-cloack></uk-icon>
+					<span class="sr-only">{ i18n.T(ctx, "Tag.other") }</span>
+				</a>
+			}
 		</div>
 		<div class="flex flex-col gap-4">
 			<a
