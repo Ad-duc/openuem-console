@@ -1131,10 +1131,12 @@ de:
     new:
       title: "Neues Profil"
       description: "Geben Sie dem Profil eine Beschreibung, die hilft, sein Ziel zu identifizieren"
+      name: "Name"
+      name_text: "Namen eingeben..."
       profile: "Profilbeschreibung"
       text: "Beschreibung eingeben..."
       create: "Profil erstellen"
-      empty: "Profilbeschreibung kann nicht leer sein"
+      empty: "Profilname kann nicht leer sein"
       could_not_save: "Profil konnte nicht gespeichert werden"
       saved: "Ein neues Profil wurde erstellt"
       num_tasks: "# Aufgaben"

@@ -32,6 +32,25 @@ templ EditProfile(c echo.Context, p partials.PaginationAndSort, profile *ent.Pro
 			<div class="uk-card-body">
 				<div class="flex flex-col gap-4">
 					<div class="flex flex-col gap-4 mt-6">
+						<label class="uk-form-label" for="profile-name">
+							{ i18n.T(ctx, "profiles.new.name") }
+						</label>
+						<div class="uk-form-controls">
+							<input
+								id="profile-name"
+								name="profile-name"
+								type="text"
+								class="uk-input w-1/2"
+								value={ profile.Name }
+								placeholder={ i18n.T(ctx, "profiles.new.name_text") }
+								aria-label="Profile's name"
+								autocomplete="off"
+								autocorrect="off"
+								autocapitalize="off"
+								spellcheck="false"
+								required
+							/>
+						</div>
 						<label class="uk-form-label" for="profile-description">
 							{ i18n.T(ctx, "profiles.new.profile") }
 						</label>
@@ -47,9 +66,7 @@ templ EditProfile(c echo.Context, p partials.PaginationAndSort, profile *ent.Pro
 								autocorrect="off"
 								autocapitalize="off"
 								spellcheck="false"
-							>
-								{ profile.Name }
-							</textarea>
+							>{ profile.Description }</textarea>
 						</div>
 						<div class="flex gap-8">
 							<div>
@@ -97,7 +114,7 @@ templ EditProfile(c echo.Context, p partials.PaginationAndSort, profile *ent.Pro
 								hx-target="#main"
 								hx-swap="outerHTML"
 								hx-push-url="false"
-								hx-include="#profile-description, #profile-assignment"
+								hx-include="#profile-name, #profile-description, #profile-assignment"
 							>
 								{ i18n.T(ctx, "profiles.edit.save") }
 							</button>
